@@ -202,7 +202,7 @@ a { color: inherit; }
   filter: drop-shadow(4px 6px 0 rgba(0,0,0,0.25));
   animation: bob 1.6s ease-in-out infinite;
 }
-.sprite.jolteon img {
+.sprite.ampharos img {
   width: 168px;
   animation-delay: 0.3s;
 }
@@ -312,6 +312,116 @@ a { color: inherit; }
   transition: width 1.4s cubic-bezier(.2,.7,.2,1);
 }
 
+/* ---------- Skills section ---------- */
+#skills .skill-group {
+  margin-bottom: 22px;
+}
+#skills .skill-group:last-child {
+  margin-bottom: 0;
+}
+
+.skill-group h3 {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--pkmn-blue-dark);
+  background: var(--pkmn-yellow);
+  padding: 6px 12px;
+  margin-bottom: 12px;
+  border: 3px solid var(--pkmn-blue-dark);
+  box-shadow:
+    inset 0 0 0 1px white,
+    3px 3px 0 var(--pkmn-shadow);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.skill-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 4px 28px;
+}
+
+.skill-list li {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  line-height: 1.6;
+  padding: 6px 0;
+  border-bottom: 1px dotted #b8b8a0;
+}
+
+.skill-name {
+  letter-spacing: 0.5px;
+  word-break: break-word;
+}
+
+/* ---------- Star rating bar ---------- */
+/* The .stars element is a 5-star strip. A grayish base layer fills 100%,
+   and a gold foreground layer fills to var(--fill). Both layers use the
+   same SVG mask shaped like a 5-pointed star, repeated horizontally. */
+.stars {
+  --fill: 0%;
+  --star-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><polygon points='10,1 12.4,7.4 19.4,7.4 13.7,11.4 15.9,17.9 10,14 4.1,17.9 6.3,11.4 0.6,7.4 7.6,7.4' fill='black'/></svg>");
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height: 18px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.stars::before,
+.stars::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  -webkit-mask-image: var(--star-mask);
+          mask-image: var(--star-mask);
+  -webkit-mask-repeat: repeat-x;
+          mask-repeat: repeat-x;
+  -webkit-mask-size: 20px 18px;
+          mask-size: 20px 18px;
+  -webkit-mask-position: 0 50%;
+          mask-position: 0 50%;
+}
+.stars::before {
+  width: 100%;
+  background: #b8b8a0;
+}
+.stars::after {
+  width: var(--fill, 0%);
+  background: linear-gradient(
+    to bottom,
+    #fff0a8 0%,
+    var(--pkmn-yellow) 45%,
+    var(--pkmn-yellow-dark) 100%
+  );
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.25));
+  transition: width 1.4s cubic-bezier(.2, .7, .2, 1);
+}
+
+@media (max-width: 640px) {
+  .skill-list {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .skill-list li {
+    grid-template-columns: 1fr 96px;
+    font-size: 9px;
+    gap: 8px;
+  }
+  .stars { width: 96px; height: 16px; }
+  .stars::before, .stars::after {
+    -webkit-mask-size: 19.2px 16px;
+            mask-size: 19.2px 16px;
+  }
+  .skill-group h3 { font-size: 10px; padding: 5px 10px; }
+}
+
 /* ---------- Resume / button ---------- */
 .resume-actions {
   margin-top: 8px;
@@ -372,7 +482,11 @@ a { color: inherit; }
   display: grid;
   grid-template-columns: 32px 1fr;
   grid-template-rows: auto auto;
+  grid-template-areas:
+    "icon  label"
+    "handle handle";
   column-gap: 12px;
+  row-gap: 6px;
   align-items: center;
   background: white;
   border: 4px solid var(--pkmn-blue-dark);
@@ -393,7 +507,7 @@ a { color: inherit; }
   background: var(--pkmn-yellow);
 }
 .social-link .social-icon {
-  grid-row: span 2;
+  grid-area: icon;
   width: 32px;
   height: 32px;
   border: 2px solid var(--pkmn-blue-dark);
@@ -415,13 +529,20 @@ a { color: inherit; }
 .social-link [data-icon="email"]::before    { content: '@'; font-size: 18px; color: var(--pkmn-red); }
 
 .social-label {
+  grid-area: label;
   font-size: 11px;
   letter-spacing: 1px;
 }
 .social-handle {
-  font-size: 9px;
-  color: #666;
-  margin-top: 4px;
+  grid-area: handle;
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 1.2;
+  color: #555;
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* ---------- Footer ---------- */
@@ -449,7 +570,7 @@ footer .press {
   .title-bar h1 { font-size: 13px; letter-spacing: 1px; }
   .pokeball-icon { width: 16px; height: 16px; }
   .sprite img { width: 132px; }
-  .sprite.jolteon img { width: 120px; }
+  .sprite.ampharos img { width: 120px; }
   .dialog-box { padding: 22px 18px 18px; }
   .dialog-box h2 { font-size: 12px; }
   .dialog-box p, .interest-list li { font-size: 10px; line-height: 1.9; }

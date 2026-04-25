@@ -36,13 +36,13 @@ cp ~/Documents/<resume>.pdf assets/resume.pdf
 
 ## Sprite assets
 
-The trainer and Jolteon sprites are hot-linked from `play.pokemonshowdown.com` and `img.pokemondb.net`. They render fine, but if you want to bulletproof against the CDNs going down, save local copies into `assets/` and update the two `img src` paths in `index.html`.
+The trainer and Ampharos sprites are hot-linked from `play.pokemonshowdown.com` and `img.pokemondb.net`. They render fine, but if you want to bulletproof against the CDNs going down, save local copies into `assets/` and update the two `img src` paths in `index.html`.
 
 ## Easter eggs
 
 - The Pokedex Entry types itself out when it scrolls into view.
 - Stat bars fill in when the Interests section comes into view.
-- The Konami code (Up Up Down Down Left Right Left Right B A) makes Jolteon glow.
+- The Konami code (Up Up Down Down Left Right Left Right B A) makes Ampharos glow.
 
 ## Editing notes
 

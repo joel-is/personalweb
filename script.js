@@ -61,9 +61,9 @@
     obs.observe(about);
   }
 
-  /* ---------- Animate stat bars when in view ---------- */
+  /* ---------- Animate stat bars + skill stars when in view ---------- */
   function setupStatBars() {
-    var bars = document.querySelectorAll('.bar');
+    var bars = document.querySelectorAll('.bar, .stars');
     if (!bars.length) return;
 
     if (!('IntersectionObserver' in window)) {
@@ -77,15 +77,15 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           var b = entry.target;
-          // Tiny stagger for a satisfying cascade.
+          // Stagger within the parent UL so each list cascades on its own.
           var idx = Array.prototype.indexOf.call(b.parentElement.parentElement.children, b.parentElement);
           setTimeout(function () {
             b.style.setProperty('--fill', (b.dataset.fill || '0') + '%');
-          }, idx * 120);
+          }, idx * 90);
           obs.unobserve(b);
         }
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.25 });
 
     bars.forEach(function (b) { obs.observe(b); });
   }
@@ -100,7 +100,7 @@
         pos++;
         if (pos === seq.length) {
           pos = 0;
-          var jolt = document.querySelector('.sprite.jolteon img');
+          var jolt = document.querySelector('.sprite.ampharos img');
           if (jolt) {
             jolt.style.transition = 'filter 0.4s';
             jolt.style.filter = 'drop-shadow(0 0 16px #f8c038) drop-shadow(0 0 32px #f8c038)';
@@ -160,8 +160,8 @@
     if (!scene || !cursor) return;
 
     var trainer = scene.querySelector('.sprite.trainer');
-    var jolteon = scene.querySelector('.sprite.jolteon');
-    if (!trainer && !jolteon) return;
+    var ampharos = scene.querySelector('.sprite.ampharos');
+    if (!trainer && !ampharos) return;
 
     var HOLD_MS = 2000;
     var holdRAF = null;
@@ -178,8 +178,8 @@
       if (trainer && trainer.contains(path)) {
         return { el: trainer, modal: 'dex-joel' };
       }
-      if (jolteon && jolteon.contains(path)) {
-        return { el: jolteon, modal: 'dex-jolteon' };
+      if (ampharos && ampharos.contains(path)) {
+        return { el: ampharos, modal: 'dex-ampharos' };
       }
       return null;
     }
@@ -264,10 +264,10 @@
       startHold(fakeEvt);
     }, { passive: false });
 
-    // Suppress Jolteon link navigation while the cursor is in scan mode.
-    var jolteonLink = jolteon && jolteon.querySelector('a');
-    if (jolteonLink) {
-      jolteonLink.addEventListener('click', function (e) {
+    // Suppress Ampharos link navigation while the cursor is in scan mode.
+    var ampharosLink = ampharos && ampharos.querySelector('a');
+    if (ampharosLink) {
+      ampharosLink.addEventListener('click', function (e) {
         if (isFinePointer) e.preventDefault();
       });
     }
