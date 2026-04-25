@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joel Shapiro | Trainer Card</title>
+  <meta name="description" content="The personal site of Joel Shapiro, Software Development Engineer at AWS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <main class="container">
+
+    <!-- Title bar -->
+    <header class="title-bar">
+      <span class="pokeball-icon" aria-hidden="true"></span>
+      <h1>Joel's Trainer Card</h1>
+      <span class="pokeball-icon" aria-hidden="true"></span>
+    </header>
+
+    <!-- Battle / hero scene -->
+    <section class="battle-scene" aria-label="Trainer scene">
+      <div class="clouds" aria-hidden="true">
+        <span class="cloud cloud-1"></span>
+        <span class="cloud cloud-2"></span>
+        <span class="cloud cloud-3"></span>
+      </div>
+      <div class="grass-tufts" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="sprite-row">
+        <figure class="sprite trainer">
+          <img src="https://play.pokemonshowdown.com/sprites/trainers/barry.png" alt="Pixel sprite of Joel as a Pokemon trainer">
+          <figcaption>JOEL</figcaption>
+        </figure>
+        <figure class="sprite jolteon">
+          <a href="https://pokemondb.net/pokedex/jolteon" target="_blank" rel="noopener">
+            <img src="https://img.pokemondb.net/sprites/ruby-sapphire/normal/jolteon.png" alt="Pixel sprite of Jolteon">
+          </a>
+          <figcaption>JOLTEON Lv.99</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="dialog-box" id="about">
+      <h2>Pokedex Entry</h2>
+      <p data-typewriter>Hi, I'm Joel. I'm a Software Development Engineer at AWS currently living in New York and a graduate of Boston University. By day I build cloud storage infrastructure on the FSxN (FSx for ONTAP) team.</p>
+      <p data-typewriter>By night I think a lot about AI governance, which is one of the defining policy questions of our generation, and I write about it on my Substack.</p>
+      <p data-typewriter>When I'm not at a keyboard, I'm probably running loops in Central Park, on the tennis court, or working through Agatha Christie's complete bibliography one mystery at a time.</p>
+    </section>
+
+    <!-- Interests -->
+    <section class="dialog-box" id="interests">
+      <h2>Trainer Interests</h2>
+      <ul class="interest-list">
+        <li><span class="label">AI Policy and Governance</span><span class="bar" data-fill="95"></span></li>
+        <li><span class="label">Pokemon</span><span class="bar" data-fill="100"></span></li>
+        <li><span class="label">Tennis</span><span class="bar" data-fill="80"></span></li>
+        <li><span class="label">Running in Central Park</span><span class="bar" data-fill="85"></span></li>
+        <li><span class="label">Reading every Agatha Christie novel</span><span class="bar" data-fill="90"></span></li>
+      </ul>
+    </section>
+
+    <!-- Resume -->
+    <section class="dialog-box" id="resume">
+      <h2>Trainer Resume</h2>
+      <p>Grab the latest copy of my resume below.</p>
+      <div class="resume-actions">
+        <a href="assets/resume.pdf" class="pokeball-btn" download>
+          <span class="ball" aria-hidden="true"></span>
+          Download Resume
+        </a>
+      </div>
+    </section>
+
+    <!-- Connect -->
+    <section class="dialog-box" id="connect">
+      <h2>Connect</h2>
+      <div class="social-grid">
+        <a class="social-link" href="https://justaswe.substack.com/" target="_blank" rel="noopener">
+          <span class="social-icon" data-icon="substack" aria-hidden="true"></span>
+          <span class="social-label">Substack</span>
+          <span class="social-handle">justaswe</span>
+        </a>
+        <a class="social-link" href="https://github.com/joel-is" target="_blank" rel="noopener">
+          <span class="social-icon" data-icon="github" aria-hidden="true"></span>
+          <span class="social-label">GitHub</span>
+          <span class="social-handle">@joel-is</span>
+        </a>
+        <a class="social-link" href="https://www.linkedin.com/in/joelshap/" target="_blank" rel="noopener">
+          <span class="social-icon" data-icon="linkedin" aria-hidden="true"></span>
+          <span class="social-label">LinkedIn</span>
+          <span class="social-handle">@joelshap</span>
+        </a>
+        <a class="social-link" href="mailto:joel.i.shapiro@gmail.com">
+          <span class="social-icon" data-icon="email" aria-hidden="true"></span>
+          <span class="social-label">Email</span>
+          <span class="social-handle">joel.i.shapiro</span>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 Joel Shapiro. Pixels assembled with care.</p>
+      <p class="press">&#9658; Press A to continue</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

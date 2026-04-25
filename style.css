@@ -1,0 +1,470 @@
+/* =========================================================
+   Joel Shapiro Personal Site
+   32-bit / GBA-era Pokemon theme
+   ========================================================= */
+
+:root {
+  --pkmn-blue:        #3b5ba5;
+  --pkmn-blue-dark:   #1a2547;
+  --pkmn-red:         #d83838;
+  --pkmn-red-dark:    #a02828;
+  --pkmn-yellow:      #f8c038;
+  --pkmn-yellow-dark: #c89020;
+  --pkmn-grass:       #58c060;
+  --pkmn-grass-dark:  #408848;
+  --pkmn-sky:         #88c8f8;
+  --pkmn-sky-dark:    #5898d0;
+  --pkmn-text:        #2a2a2a;
+  --pkmn-bg:          #f8f8e8;
+  --pkmn-bg-shade:    #e8e8d0;
+  --pkmn-shadow:      rgba(0,0,0,0.35);
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Press Start 2P', system-ui, monospace;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      var(--pkmn-blue) 0 24px,
+      #34508f 24px 48px
+    );
+  color: var(--pkmn-text);
+  line-height: 1.9;
+  font-size: 12px;
+  min-height: 100vh;
+  padding: 24px 16px;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+a { color: inherit; }
+
+/* ---------- Layout ---------- */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ---------- CRT scanlines overlay ---------- */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 3px
+  );
+  z-index: 1000;
+  mix-blend-mode: multiply;
+}
+
+/* ---------- Title bar ---------- */
+.title-bar {
+  background: var(--pkmn-red);
+  color: white;
+  padding: 18px 24px;
+  text-align: center;
+  border: 4px solid var(--pkmn-blue-dark);
+  box-shadow:
+    inset 0 0 0 2px white,
+    8px 8px 0 var(--pkmn-shadow);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-shadow: 2px 2px 0 var(--pkmn-red-dark);
+}
+.title-bar h1 {
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.pokeball-icon {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, white 0 22%, transparent 22% 26%, var(--pkmn-blue-dark) 26% 30%, transparent 30% 34%) ,
+    linear-gradient(to bottom, white 0 50%, var(--pkmn-blue-dark) 50% 55%, white 55% 100%);
+  box-shadow: inset 0 0 0 2px var(--pkmn-blue-dark);
+  flex-shrink: 0;
+}
+
+/* ---------- Battle scene ---------- */
+.battle-scene {
+  position: relative;
+  background: linear-gradient(
+    to bottom,
+    var(--pkmn-sky) 0%,
+    var(--pkmn-sky) 55%,
+    var(--pkmn-grass) 55%,
+    var(--pkmn-grass-dark) 100%
+  );
+  padding: 36px 20px 28px;
+  border: 4px solid var(--pkmn-blue-dark);
+  box-shadow:
+    inset 0 0 0 2px white,
+    8px 8px 0 var(--pkmn-shadow);
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.clouds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.cloud {
+  position: absolute;
+  width: 36px;
+  height: 12px;
+  background: white;
+  border-radius: 2px;
+  box-shadow:
+    -8px -4px 0 white,
+    8px -4px 0 white,
+    -16px 0 0 white,
+    16px 0 0 white;
+  opacity: 0.85;
+  animation: drift 22s linear infinite;
+}
+.cloud-1 { top: 10%;  left: -10%; animation-delay: 0s;   }
+.cloud-2 { top: 22%;  left: -25%; animation-delay: -8s;  transform: scale(0.7); }
+.cloud-3 { top: 6%;   left: -50%; animation-delay: -14s; transform: scale(1.2); }
+
+@keyframes drift {
+  from { transform: translateX(0)    scale(var(--s, 1)); }
+  to   { transform: translateX(160vw) scale(var(--s, 1)); }
+}
+
+.grass-tufts {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  display: flex;
+  justify-content: space-around;
+  z-index: 1;
+  pointer-events: none;
+}
+.grass-tufts span {
+  width: 14px;
+  height: 14px;
+  background:
+    radial-gradient(circle at 30% 60%, var(--pkmn-grass) 30%, transparent 32%),
+    radial-gradient(circle at 70% 60%, var(--pkmn-grass) 30%, transparent 32%),
+    radial-gradient(circle at 50% 30%, var(--pkmn-grass) 30%, transparent 32%);
+  filter: drop-shadow(2px 2px 0 var(--pkmn-grass-dark));
+}
+
+.sprite-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.sprite {
+  text-align: center;
+}
+.sprite img {
+  width: 192px;
+  height: auto;
+  filter: drop-shadow(4px 6px 0 rgba(0,0,0,0.25));
+  animation: bob 1.6s ease-in-out infinite;
+}
+.sprite.jolteon img {
+  width: 168px;
+  animation-delay: 0.3s;
+}
+.sprite figcaption {
+  display: inline-block;
+  margin-top: 12px;
+  background: white;
+  border: 3px solid var(--pkmn-blue-dark);
+  padding: 6px 10px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  box-shadow: 3px 3px 0 var(--pkmn-shadow);
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* ---------- Dialog box (Pokemon text frame) ---------- */
+.dialog-box {
+  position: relative;
+  background: var(--pkmn-bg);
+  border: 4px solid var(--pkmn-blue-dark);
+  box-shadow:
+    inset 0 0 0 2px white,
+    inset 0 0 0 4px var(--pkmn-blue-dark),
+    8px 8px 0 var(--pkmn-shadow);
+  padding: 28px 26px 24px;
+  margin-bottom: 28px;
+}
+.dialog-box::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 18px;
+  right: 18px;
+  height: 4px;
+  background: var(--pkmn-bg);
+}
+
+.dialog-box h2 {
+  font-size: 14px;
+  color: var(--pkmn-red);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px dashed var(--pkmn-blue-dark);
+  letter-spacing: 1.5px;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.08);
+}
+
+.dialog-box p {
+  font-size: 11px;
+  line-height: 2;
+  margin-bottom: 14px;
+}
+.dialog-box p:last-child { margin-bottom: 0; }
+
+/* ---------- Interest list ---------- */
+.interest-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.interest-list li {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  padding: 8px 0 8px 36px;
+  position: relative;
+  border-bottom: 2px dotted #b0b0a0;
+}
+.interest-list li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--pkmn-blue-dark);
+  background:
+    radial-gradient(circle at 50% 50%, white 0 18%, var(--pkmn-blue-dark) 18% 24%, transparent 24% 30%),
+    linear-gradient(to bottom, var(--pkmn-red) 0 50%, white 50% 100%);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+}
+
+.bar {
+  display: block;
+  height: 14px;
+  background: #d8d8c0;
+  border: 2px solid var(--pkmn-blue-dark);
+  position: relative;
+  overflow: hidden;
+}
+.bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: var(--fill, 0%);
+  background: linear-gradient(to right, var(--pkmn-yellow), var(--pkmn-red));
+  transition: width 1.4s cubic-bezier(.2,.7,.2,1);
+}
+
+/* ---------- Resume / button ---------- */
+.resume-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pokeball-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--pkmn-red);
+  color: white;
+  text-decoration: none;
+  padding: 14px 22px;
+  border: 4px solid var(--pkmn-blue-dark);
+  box-shadow:
+    inset 0 0 0 2px white,
+    6px 6px 0 var(--pkmn-shadow);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+  text-shadow: 2px 2px 0 var(--pkmn-red-dark);
+}
+.pokeball-btn .ball {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, white 0 50%, var(--pkmn-blue-dark) 50% 56%, var(--pkmn-red) 56% 100%);
+  border: 2px solid var(--pkmn-blue-dark);
+  box-shadow: inset 0 0 0 1px white;
+}
+.pokeball-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow:
+    inset 0 0 0 2px white,
+    4px 4px 0 var(--pkmn-shadow);
+}
+.pokeball-btn:active {
+  transform: translate(6px, 6px);
+  box-shadow:
+    inset 0 0 0 2px white,
+    0 0 0 var(--pkmn-shadow);
+}
+
+/* ---------- Social grid ---------- */
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.social-link {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  align-items: center;
+  background: white;
+  border: 4px solid var(--pkmn-blue-dark);
+  padding: 12px 14px;
+  text-decoration: none;
+  color: var(--pkmn-blue-dark);
+  font-size: 11px;
+  box-shadow:
+    inset 0 0 0 2px var(--pkmn-bg),
+    5px 5px 0 var(--pkmn-shadow);
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background 0.15s;
+}
+.social-link:hover {
+  transform: translate(2px, 2px);
+  box-shadow:
+    inset 0 0 0 2px var(--pkmn-bg),
+    3px 3px 0 var(--pkmn-shadow);
+  background: var(--pkmn-yellow);
+}
+.social-link .social-icon {
+  grid-row: span 2;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--pkmn-blue-dark);
+  background: var(--pkmn-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--pkmn-blue-dark);
+}
+.social-link .social-icon::before {
+  content: '?';
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+}
+.social-link [data-icon="substack"]::before { content: 'S'; color: var(--pkmn-red); }
+.social-link [data-icon="github"]::before   { content: 'GH'; font-size: 14px; }
+.social-link [data-icon="linkedin"]::before { content: 'in'; font-size: 14px; color: var(--pkmn-blue); }
+.social-link [data-icon="email"]::before    { content: '@'; font-size: 18px; color: var(--pkmn-red); }
+
+.social-label {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.social-handle {
+  font-size: 9px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  text-align: center;
+  color: white;
+  font-size: 9px;
+  padding: 28px 0 12px;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+  line-height: 2;
+}
+footer .press {
+  margin-top: 8px;
+  color: var(--pkmn-yellow);
+  animation: blink 1.1s steps(2, end) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0.25; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  body { font-size: 10px; padding: 14px 8px; }
+  .title-bar { padding: 14px 12px; gap: 10px; }
+  .title-bar h1 { font-size: 13px; letter-spacing: 1px; }
+  .pokeball-icon { width: 16px; height: 16px; }
+  .sprite img { width: 132px; }
+  .sprite.jolteon img { width: 120px; }
+  .dialog-box { padding: 22px 18px 18px; }
+  .dialog-box h2 { font-size: 12px; }
+  .dialog-box p, .interest-list li { font-size: 10px; line-height: 1.9; }
+  .interest-list li {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .battle-scene { padding: 24px 12px 18px; }
+  .pokeball-btn { font-size: 11px; padding: 12px 16px; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
