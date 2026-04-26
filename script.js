@@ -273,6 +273,75 @@
     }
   }
 
+  /* ---------- Scroll progress bar ---------- */
+  function setupScrollProgress() {
+    var bar = document.querySelector('.scroll-progress');
+    if (!bar) return;
+    var rafPending = false;
+
+    function update() {
+      rafPending = false;
+      var doc = document.documentElement;
+      var max = (doc.scrollHeight || document.body.scrollHeight) - window.innerHeight;
+      var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      if (pct < 0) pct = 0;
+      if (pct > 100) pct = 100;
+      bar.style.width = pct + '%';
+    }
+    function onScroll() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(update);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  }
+
+  /* ---------- Scroll reveal ---------- */
+  function setupReveal() {
+    var els = document.querySelectorAll('.dialog-box, .battle-scene');
+    if (!els.length) return;
+
+    // Apply the hidden state via JS so noscript users still see the content.
+    els.forEach(function (el) { el.classList.add('reveal'); });
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('in-view'); });
+      return;
+    }
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+    els.forEach(function (el) { obs.observe(el); });
+  }
+
+  /* ---------- Smooth nav anchor scroll with sticky-nav offset ---------- */
+  function setupNavAnchors() {
+    var nav = document.querySelector('.nav-pill');
+    if (!nav) return;
+    var links = nav.querySelectorAll('a[href^="#"]');
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = a.getAttribute('href').slice(1);
+        var target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        var navBottom = nav.getBoundingClientRect().bottom;
+        var top = target.getBoundingClientRect().top + window.scrollY - navBottom - 12;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+        history.replaceState(null, '', '#' + id);
+      });
+    });
+  }
+
   /* ---------- Init ---------- */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
@@ -281,6 +350,9 @@
       setupKonami();
       setupDexModals();
       setupPokedexCursor();
+      setupScrollProgress();
+      setupReveal();
+      setupNavAnchors();
     });
   } else {
     setupTypewriter();
@@ -288,5 +360,8 @@
     setupKonami();
     setupDexModals();
     setupPokedexCursor();
+    setupScrollProgress();
+    setupReveal();
+    setupNavAnchors();
   }
 })();
