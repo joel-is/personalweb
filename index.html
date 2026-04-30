@@ -256,6 +256,75 @@
     </div>
   </div>
 
+  <!-- Starter picker (shown on first visit) -->
+  <div class="starter-modal" id="starter-modal" role="dialog" aria-modal="true" aria-labelledby="starter-modal-title" aria-hidden="true">
+    <div class="starter-overlay"></div>
+    <div class="starter-card">
+      <div class="starter-header">
+        <span class="dex-light"></span>
+        <h2 id="starter-modal-title">Choose Your Starter!</h2>
+        <span class="dex-light"></span>
+      </div>
+      <p class="starter-intro">Pick a Pokemon to journey with you through this site.</p>
+      <div class="starter-grid">
+        <button class="starter-pick" data-starter="chimchar" type="button">
+          <div class="starter-portrait">
+            <img src="https://img.pokemondb.net/sprites/diamond-pearl/normal/chimchar.png" alt="Chimchar">
+          </div>
+          <span class="starter-name">CHIMCHAR</span>
+          <span class="starter-type starter-type-fire">FIRE</span>
+        </button>
+        <button class="starter-pick" data-starter="turtwig" type="button">
+          <div class="starter-portrait">
+            <img src="https://img.pokemondb.net/sprites/diamond-pearl/normal/turtwig.png" alt="Turtwig">
+          </div>
+          <span class="starter-name">TURTWIG</span>
+          <span class="starter-type starter-type-grass">GRASS</span>
+        </button>
+        <button class="starter-pick" data-starter="piplup" type="button">
+          <div class="starter-portrait">
+            <img src="https://img.pokemondb.net/sprites/diamond-pearl/normal/piplup.png" alt="Piplup">
+          </div>
+          <span class="starter-name">PIPLUP</span>
+          <span class="starter-type starter-type-water">WATER</span>
+        </button>
+      </div>
+      <p class="starter-hint">Tip: scroll, click, and explore to fill the XP bar and evolve!</p>
+    </div>
+  </div>
+
+  <!-- Starter Pokemon cursor (follows the mouse outside the battle scene) -->
+  <div class="starter-cursor" id="starter-cursor" aria-hidden="true">
+    <img id="starter-cursor-img" src="" alt="">
+  </div>
+
+  <!-- XP bar (floats at bottom of viewport) -->
+  <div class="xp-bar" id="xp-bar" aria-hidden="true">
+    <div class="xp-bar-portrait">
+      <img id="xp-bar-sprite" src="" alt="">
+    </div>
+    <div class="xp-bar-info">
+      <div class="xp-bar-meta">
+        <span class="xp-bar-name" id="xp-bar-name">CHIMCHAR</span>
+        <span class="xp-bar-stage">STAGE <span id="xp-bar-stage">1</span>/3</span>
+      </div>
+      <div class="xp-bar-track">
+        <div class="xp-bar-fill" id="xp-bar-fill"></div>
+        <span class="xp-bar-pct" id="xp-bar-pct">0%</span>
+      </div>
+    </div>
+    <button type="button" class="xp-bar-reset" id="xp-bar-reset" title="Pick a different starter">&#x21bb;</button>
+  </div>
+
+  <!-- Evolution animation overlay -->
+  <div class="evo-overlay" id="evo-overlay" aria-hidden="true">
+    <div class="evo-flash"></div>
+    <div class="evo-stage">
+      <img class="evo-sprite" id="evo-sprite" src="" alt="">
+      <p class="evo-text" id="evo-text"></p>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

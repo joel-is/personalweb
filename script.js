@@ -342,6 +342,325 @@
     });
   }
 
+  /* =========================================================
+     Starter system: cursor, XP bar, evolution
+     ========================================================= */
+
+  // Each line: [base, mid, final]
+  var EVO_LINES = {
+    chimchar: ['chimchar', 'monferno', 'infernape'],
+    turtwig:  ['turtwig',  'grotle',   'torterra'],
+    piplup:   ['piplup',   'prinplup', 'empoleon']
+  };
+  var SPRITE_BASE = 'https://img.pokemondb.net/sprites/diamond-pearl/normal/';
+  var STORAGE_KEY = 'joel-starter-state-v1';
+  var XP_TO_EVOLVE = 100;
+
+  function spriteUrl(name) { return SPRITE_BASE + name + '.png'; }
+
+  var starterState = null; // { line, stage, xp }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      var s = JSON.parse(raw);
+      if (!s || !EVO_LINES[s.line]) return null;
+      if (typeof s.stage !== 'number') s.stage = 0;
+      if (typeof s.xp    !== 'number') s.xp = 0;
+      s.stage = Math.max(0, Math.min(2, s.stage));
+      s.xp    = Math.max(0, Math.min(XP_TO_EVOLVE, s.xp));
+      return s;
+    } catch (e) { return null; }
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(starterState)); }
+    catch (e) {}
+  }
+  function clearState() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  }
+
+  function currentSpriteName() {
+    if (!starterState) return null;
+    return EVO_LINES[starterState.line][starterState.stage];
+  }
+  function nextSpriteName() {
+    if (!starterState || starterState.stage >= 2) return null;
+    return EVO_LINES[starterState.line][starterState.stage + 1];
+  }
+
+  /* ---------- Cursor that follows the mouse globally ---------- */
+  function setupStarterCursor() {
+    var cursor = document.getElementById('starter-cursor');
+    var img    = document.getElementById('starter-cursor-img');
+    if (!cursor || !img) return;
+
+    var isFinePointer = window.matchMedia &&
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!isFinePointer) return;
+
+    var battle = document.querySelector('.battle-scene');
+    var lastInBattle = false;
+
+    function refresh() {
+      if (!starterState) {
+        cursor.classList.remove('active');
+        document.body.classList.remove('starter-active');
+        return;
+      }
+      img.src = spriteUrl(currentSpriteName());
+      cursor.classList.add('active');
+      document.body.classList.add('starter-active');
+    }
+
+    function onMove(e) {
+      cursor.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+      // Hide whenever the cursor is over the battle scene (Pokedex cursor takes over there).
+      var inBattle = battle && battle.contains(e.target);
+      if (inBattle !== lastInBattle) {
+        cursor.classList.toggle('hidden', inBattle);
+        lastInBattle = inBattle;
+      }
+    }
+    function onLeave() {
+      cursor.classList.add('hidden');
+    }
+    function onEnter() {
+      cursor.classList.remove('hidden');
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseleave', onLeave);
+    document.addEventListener('mouseenter', onEnter);
+
+    // Expose so other modules can refresh the displayed sprite after evolve.
+    setupStarterCursor.refresh = refresh;
+    refresh();
+  }
+
+  /* ---------- XP bar UI ---------- */
+  function setupXpBar() {
+    var bar     = document.getElementById('xp-bar');
+    var sprite  = document.getElementById('xp-bar-sprite');
+    var nameEl  = document.getElementById('xp-bar-name');
+    var stageEl = document.getElementById('xp-bar-stage');
+    var fillEl  = document.getElementById('xp-bar-fill');
+    var pctEl   = document.getElementById('xp-bar-pct');
+    var resetBtn = document.getElementById('xp-bar-reset');
+    if (!bar || !fillEl) return;
+
+    function render() {
+      if (!starterState) {
+        bar.classList.remove('shown');
+        bar.setAttribute('aria-hidden', 'true');
+        return;
+      }
+      var name = currentSpriteName();
+      sprite.src = spriteUrl(name);
+      nameEl.textContent = name.toUpperCase();
+      stageEl.textContent = String(starterState.stage + 1);
+      var atMax = starterState.stage >= 2;
+      var pct = atMax ? 100 : Math.min(100, Math.round(starterState.xp));
+      fillEl.style.width = pct + '%';
+      pctEl.textContent = atMax ? 'MAX' : pct + '%';
+      fillEl.classList.toggle('full', atMax);
+      bar.classList.add('shown');
+      bar.setAttribute('aria-hidden', 'false');
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        if (!confirm('Pick a different starter? Your current Pokemon will be retired.')) return;
+        clearState();
+        starterState = null;
+        render();
+        if (setupStarterCursor.refresh) setupStarterCursor.refresh();
+        showStarterPicker();
+      });
+    }
+
+    setupXpBar.render = render;
+    render();
+  }
+
+  /* ---------- Award XP from interactions ---------- */
+  var lastScrollXpTime = 0;
+  var pendingEvolution = false;
+
+  function gainXp(amount) {
+    if (!starterState || pendingEvolution) return;
+    if (starterState.stage >= 2) return; // already final form
+    starterState.xp += amount;
+    if (starterState.xp >= XP_TO_EVOLVE) {
+      starterState.xp = XP_TO_EVOLVE;
+      saveState();
+      if (setupXpBar.render) setupXpBar.render();
+      runEvolution();
+    } else {
+      saveState();
+      if (setupXpBar.render) setupXpBar.render();
+    }
+  }
+
+  function setupXpEarning() {
+    // Scroll: small XP gain, throttled.
+    window.addEventListener('scroll', function () {
+      var now = Date.now();
+      if (now - lastScrollXpTime < 220) return;
+      lastScrollXpTime = now;
+      gainXp(0.6);
+    }, { passive: true });
+
+    // Any click on the page: tiny gain.
+    document.addEventListener('click', function (e) {
+      // Skip clicks inside the starter modal (those are setup, not engagement).
+      if (e.target.closest('.starter-modal')) return;
+      // Bigger gain for clicks on real interactive things.
+      var t = e.target.closest('a, button, .social-link, .nav-pill a, .pokeball-btn');
+      gainXp(t ? 6 : 2);
+    });
+
+    // Resume download: jump straight to next stage.
+    var resumeBtn = document.querySelector('a.pokeball-btn[download]');
+    if (resumeBtn) {
+      resumeBtn.addEventListener('click', function () {
+        if (!starterState) return;
+        if (starterState.stage >= 2) return;
+        // Force a level-up regardless of current XP.
+        starterState.xp = XP_TO_EVOLVE;
+        saveState();
+        if (setupXpBar.render) setupXpBar.render();
+        runEvolution();
+      });
+    }
+  }
+
+  /* ---------- Evolution animation ---------- */
+  function runEvolution() {
+    if (!starterState || pendingEvolution) return;
+    if (starterState.stage >= 2) return;
+    pendingEvolution = true;
+
+    var overlay  = document.getElementById('evo-overlay');
+    var spriteEl = document.getElementById('evo-sprite');
+    var textEl   = document.getElementById('evo-text');
+    if (!overlay || !spriteEl) {
+      // Fallback: just bump the stage.
+      starterState.stage += 1;
+      starterState.xp = 0;
+      saveState();
+      if (setupXpBar.render) setupXpBar.render();
+      if (setupStarterCursor.refresh) setupStarterCursor.refresh();
+      pendingEvolution = false;
+      return;
+    }
+
+    var oldName = currentSpriteName();
+    var newName = nextSpriteName();
+    spriteEl.src = spriteUrl(oldName);
+    textEl.textContent = '';
+    overlay.setAttribute('aria-hidden', 'false');
+
+    var reduceMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function flash() { overlay.classList.add('flashing'); }
+    function unflash() { overlay.classList.remove('flashing'); }
+
+    var t = 0;
+    function step(delay, fn) {
+      t += delay;
+      setTimeout(fn, t);
+    }
+
+    if (reduceMotion) {
+      // Skip dramatic effects: swap sprite immediately and close.
+      starterState.stage += 1;
+      starterState.xp = 0;
+      saveState();
+      spriteEl.src = spriteUrl(newName);
+      textEl.textContent = oldName.toUpperCase() + ' evolved into ' + newName.toUpperCase() + '!';
+      setTimeout(function () {
+        overlay.setAttribute('aria-hidden', 'true');
+        if (setupXpBar.render) setupXpBar.render();
+        if (setupStarterCursor.refresh) setupStarterCursor.refresh();
+        pendingEvolution = false;
+      }, 1500);
+      return;
+    }
+
+    // Choreography: silhouette toggles -> flash -> swap sprite -> reveal text.
+    overlay.classList.add('silhouette');
+    step(0,    function () { /* old as silhouette */ });
+    step(280,  function () { overlay.classList.remove('silhouette'); });
+    step(280,  function () { overlay.classList.add('silhouette'); });
+    step(280,  function () { overlay.classList.remove('silhouette'); });
+    step(280,  function () { overlay.classList.add('silhouette'); flash(); });
+    step(420,  function () {
+      // Big white-out: swap to the new sprite mid-flash, drop silhouette.
+      spriteEl.src = spriteUrl(newName);
+      overlay.classList.remove('silhouette');
+      overlay.classList.add('morphing');
+    });
+    step(80,   function () { unflash(); });
+    step(420,  function () {
+      overlay.classList.remove('morphing');
+      // Update state once the new sprite is on screen.
+      starterState.stage += 1;
+      starterState.xp = 0;
+      saveState();
+      textEl.textContent = oldName.toUpperCase() + ' evolved into ' + newName.toUpperCase() + '!';
+    });
+    step(2000, function () {
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.classList.remove('flashing', 'morphing', 'silhouette');
+      if (setupXpBar.render) setupXpBar.render();
+      if (setupStarterCursor.refresh) setupStarterCursor.refresh();
+      pendingEvolution = false;
+    });
+  }
+
+  /* ---------- Starter picker modal ---------- */
+  function showStarterPicker() {
+    var modal = document.getElementById('starter-modal');
+    if (!modal) return;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function hideStarterPicker() {
+    var modal = document.getElementById('starter-modal');
+    if (!modal) return;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  function setupStarterPicker() {
+    var modal = document.getElementById('starter-modal');
+    if (!modal) return;
+    var picks = modal.querySelectorAll('.starter-pick');
+    picks.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var line = btn.getAttribute('data-starter');
+        if (!EVO_LINES[line]) return;
+        starterState = { line: line, stage: 0, xp: 0 };
+        saveState();
+        hideStarterPicker();
+        if (setupXpBar.render) setupXpBar.render();
+        if (setupStarterCursor.refresh) setupStarterCursor.refresh();
+      });
+    });
+  }
+
+  /* ---------- Init: starter system ---------- */
+  function setupStarterSystem() {
+    starterState = loadState();
+    setupStarterPicker();
+    setupStarterCursor();
+    setupXpBar();
+    setupXpEarning();
+    if (!starterState) showStarterPicker();
+  }
+
   /* ---------- Init ---------- */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
@@ -353,6 +672,7 @@
       setupScrollProgress();
       setupReveal();
       setupNavAnchors();
+      setupStarterSystem();
     });
   } else {
     setupTypewriter();
@@ -363,5 +683,6 @@
     setupScrollProgress();
     setupReveal();
     setupNavAnchors();
+    setupStarterSystem();
   }
 })();
