@@ -122,6 +122,9 @@
     lastFocused = document.activeElement;
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    // Restore the native cursor while a Pokedex modal is open so the close
+    // button and content are easy to interact with.
+    document.body.classList.add('dex-open');
     var closeBtn = modal.querySelector('.dex-close');
     if (closeBtn) closeBtn.focus();
   }
@@ -129,6 +132,10 @@
   function closeDex(modal) {
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    // Only drop the dex-open class once every Pokedex modal is closed.
+    if (!document.querySelector('.dex-modal[aria-hidden="false"]')) {
+      document.body.classList.remove('dex-open');
+    }
     if (lastFocused && typeof lastFocused.focus === 'function') {
       try { lastFocused.focus(); } catch (e) {}
     }

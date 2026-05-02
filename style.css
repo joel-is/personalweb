@@ -943,6 +943,19 @@ footer .press {
   body.starter-active *:not(input):not(textarea) {
     cursor: none !important;
   }
+  /* But while a Pokedex modal is open, restore the native cursor (and hide
+     the starter cursor) so the popup is easy to interact with. */
+  body.dex-open,
+  body.dex-open * {
+    cursor: auto !important;
+  }
+  body.dex-open .dex-close,
+  body.dex-open [data-close] {
+    cursor: pointer !important;
+  }
+  body.dex-open .starter-cursor {
+    opacity: 0 !important;
+  }
 }
 
 /* ---------- Starter Pokemon cursor ---------- */
