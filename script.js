@@ -344,7 +344,6 @@
           if (p >= 1) {
             var id = holdModalId;
             cancelHold();
-            cursor.classList.remove('active', 'glow');
             openDex(id);
             gainXp(15);
             return;

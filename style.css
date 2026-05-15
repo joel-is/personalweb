@@ -706,15 +706,15 @@ footer .press {
 
 .project-card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 0;
+  gap: 16px;
   background: white;
   border: 4px solid var(--pkmn-blue-dark);
   box-shadow:
     inset 0 0 0 2px var(--pkmn-bg),
     6px 6px 0 var(--pkmn-shadow);
-  padding: 18px 12px 14px;
+  padding: 14px 16px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   user-select: none;
   -webkit-user-select: none;
@@ -734,20 +734,21 @@ footer .press {
 }
 
 .project-sprite-wrap {
-  width: 96px;
-  height: 96px;
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: radial-gradient(circle at center, white 0% 50%, var(--pkmn-bg) 100%);
   border: 3px solid var(--pkmn-blue-dark);
-  margin-bottom: 14px;
   box-shadow: inset 0 0 0 2px var(--pkmn-bg);
 }
 
 .project-sprite-img {
-  width: 80px;
-  height: auto;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
   filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.25));
   animation: bob 1.6s ease-in-out infinite;
 }
@@ -755,9 +756,8 @@ footer .press {
 .project-caption {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 6px;
-  width: 100%;
+  min-width: 0;
 }
 
 .project-name {
@@ -765,7 +765,6 @@ footer .press {
   font-size: 9px;
   letter-spacing: 1px;
   color: var(--pkmn-blue-dark);
-  text-align: center;
   line-height: 1.6;
 }
 
@@ -774,14 +773,13 @@ footer .press {
   font-family: 'VT323', monospace;
   font-size: 13px;
   color: #888;
-  text-align: center;
   letter-spacing: 0.5px;
 }
 
 @media (max-width: 540px) {
-  .projects-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .project-sprite-wrap { width: 80px; height: 80px; }
-  .project-sprite-img { width: 64px; }
+  .projects-grid { grid-template-columns: 1fr; gap: 12px; }
+  .project-sprite-wrap { width: 60px; height: 60px; }
+  .project-sprite-img { width: 46px; height: 46px; }
   .project-name { font-size: 8px; }
 }
 
@@ -1036,8 +1034,12 @@ footer .press {
   }
   /* But while a Pokedex modal is open, restore the native cursor (and hide
      the starter cursor) so the popup is easy to interact with. */
+  /* These two rules must stay together; the second beats the higher-specificity
+     body.starter-active *:not() rule (0-1-3) when both classes are present. */
   body.dex-open,
-  body.dex-open * {
+  body.dex-open *,
+  body.starter-active.dex-open,
+  body.starter-active.dex-open * {
     cursor: auto !important;
   }
   body.dex-open .dex-close,
