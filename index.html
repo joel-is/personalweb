@@ -28,6 +28,7 @@
     <nav class="nav-pill" aria-label="Page sections">
       <a href="#about">About</a>
       <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
       <a href="#interests">Interests</a>
       <a href="#resume">Resume</a>
       <a href="#connect">Connect</a>
@@ -115,6 +116,36 @@
           <li><span class="skill-name">English (Native)</span><span class="stars" data-fill="100" aria-label="English: 5 out of 5"></span></li>
           <li><span class="skill-name">French (Limited Working Proficiency)</span><span class="stars" data-fill="50" aria-label="French: 2.5 out of 5"></span></li>
         </ul>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="dialog-box" id="projects">
+      <h2>Field Research</h2>
+      <div class="projects-grid">
+
+        <figure class="project-card" data-dex-target="dex-smartpantry">
+          <div class="project-sprite-wrap">
+            <img src="https://img.pokemondb.net/sprites/black-white/normal/rotom-frost.png"
+                 alt="Rotom Frost sprite" class="project-sprite-img">
+          </div>
+          <figcaption class="project-caption">
+            <span class="project-name">SMART PANTRY</span>
+            <span class="project-scan-hint">HOLD TO SCAN</span>
+          </figcaption>
+        </figure>
+
+        <figure class="project-card" data-dex-target="dex-i2p">
+          <div class="project-sprite-wrap">
+            <img src="https://img.pokemondb.net/sprites/black-white/normal/munna.png"
+                 alt="Munna sprite" class="project-sprite-img">
+          </div>
+          <figcaption class="project-caption">
+            <span class="project-name">I2P APP</span>
+            <span class="project-scan-hint">HOLD TO SCAN</span>
+          </figcaption>
+        </figure>
+
       </div>
     </section>
 
@@ -252,6 +283,66 @@
       </div>
       <div class="dex-flavor">
         <p>Joel's partner Pokémon. The tip of its tail shines brightly. In the olden days, people sent signals using the tail’s light.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pokedex modal: Smart Pantry -->
+  <div class="dex-modal" id="dex-smartpantry" role="dialog" aria-modal="true" aria-labelledby="dex-smartpantry-title" aria-hidden="true">
+    <div class="dex-overlay" data-close></div>
+    <div class="dex-card">
+      <div class="dex-header">
+        <span class="dex-light"></span>
+        <span class="dex-num">No. 479</span>
+        <button type="button" class="dex-close" data-close aria-label="Close Pokedex">X</button>
+      </div>
+      <div class="dex-screen">
+        <div class="dex-sprite">
+          <img src="https://img.pokemondb.net/sprites/black-white/normal/rotom-frost.png" alt="Rotom Frost sprite">
+        </div>
+        <div class="dex-info">
+          <h3 id="dex-smartpantry-title">SMART PANTRY</h3>
+          <div class="dex-meta">
+            <div><span>TYPE</span> Full Stack</div>
+            <div><span>STACK</span> Java / Swing</div>
+            <div><span>CLASS</span> CS411</div>
+            <div><span>TEAM</span> 4 engineers</div>
+            <div><span>GITHUB</span> <a href="https://github.com/joelishap/cs411smartpantry" target="_blank" rel="noopener">cs411smartpantry &#8599;</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="dex-flavor">
+        <p>A household food management system built for CS411 (Software Engineering &amp; Design). Tracks pantry inventory, quantities, and expiration dates using Java's LocalDate API, with automatic quantity merging and file-based persistence. Built with a four-person team across a four-class OOP architecture separating model, persistence, and Swing GUI layers.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pokedex modal: I2P App -->
+  <div class="dex-modal" id="dex-i2p" role="dialog" aria-modal="true" aria-labelledby="dex-i2p-title" aria-hidden="true">
+    <div class="dex-overlay" data-close></div>
+    <div class="dex-card">
+      <div class="dex-header">
+        <span class="dex-light"></span>
+        <span class="dex-num">No. 517</span>
+        <button type="button" class="dex-close" data-close aria-label="Close Pokedex">X</button>
+      </div>
+      <div class="dex-screen">
+        <div class="dex-sprite">
+          <img src="https://img.pokemondb.net/sprites/black-white/normal/munna.png" alt="Munna sprite">
+        </div>
+        <div class="dex-info">
+          <h3 id="dex-i2p-title">I2P APP</h3>
+          <div class="dex-meta">
+            <div><span>TYPE</span> Mobile</div>
+            <div><span>STACK</span> Flutter / Firebase</div>
+            <div><span>CHALLENGE</span> Invent2Prevent</div>
+            <div><span>AWARD</span> 3rd Place</div>
+            <div><span>GITHUB</span> <a href="https://github.com/camihall/I2P_app_project" target="_blank" rel="noopener">I2P_app_project &#8599;</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="dex-flavor">
+        <p>A Duolingo-style cross-platform app helping NGOs deliver structured de-radicalization programs. Built with Flutter and Firebase (Firestore + Auth + Google Sign-In), featuring daily check-ins, guided exercises, journaling, meditation videos, and Syncfusion progress charts. Submitted to the Invent2Prevent national challenge &mdash; awarded Honorable Mention / 3rd Place.</p>
       </div>
     </div>
   </div>

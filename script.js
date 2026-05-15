@@ -280,6 +280,92 @@
     }
   }
 
+  /* ---------- Pokedex cursor + hold-to-scan for project cards ---------- */
+  function setupProjectScans() {
+    var cards = document.querySelectorAll('.project-card');
+    var cursor = document.querySelector('.dex-cursor');
+    if (!cards.length || !cursor) return;
+
+    var isFinePointer = window.matchMedia &&
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    var HOLD_MS = 2000;
+    var holdRAF = null;
+    var holdStart = 0;
+    var holdModalId = null;
+
+    function placeCursor(x, y) {
+      cursor.style.transform =
+        'translate(' + x + 'px,' + y + 'px) rotate(-12deg) scale(' +
+        (cursor.classList.contains('glow') ? 1.08 : 1) + ')';
+    }
+
+    function cancelHold() {
+      if (holdRAF) cancelAnimationFrame(holdRAF);
+      holdRAF = null;
+      holdModalId = null;
+      cursor.classList.remove('charging');
+      cursor.style.setProperty('--p', '0deg');
+    }
+
+    cards.forEach(function (card) {
+      var modalId = card.getAttribute('data-dex-target');
+
+      card.addEventListener('mouseenter', function () {
+        if (!isFinePointer) return;
+        cursor.classList.add('active', 'glow');
+      });
+
+      card.addEventListener('mouseleave', function () {
+        cursor.classList.remove('active', 'glow', 'charging');
+        cancelHold();
+      });
+
+      card.addEventListener('mousemove', function (e) {
+        if (!isFinePointer) return;
+        placeCursor(e.clientX, e.clientY);
+      });
+
+      card.addEventListener('mousedown', function (e) {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        if (!isFinePointer) {
+          openDex(modalId);
+          gainXp(15);
+          return;
+        }
+        holdModalId = modalId;
+        holdStart = performance.now();
+        cursor.classList.add('charging');
+
+        function tick() {
+          var p = (performance.now() - holdStart) / HOLD_MS;
+          cursor.style.setProperty('--p', Math.min(p, 1) * 360 + 'deg');
+          if (p >= 1) {
+            var id = holdModalId;
+            cancelHold();
+            cursor.classList.remove('active', 'glow');
+            openDex(id);
+            gainXp(15);
+            return;
+          }
+          holdRAF = requestAnimationFrame(tick);
+        }
+        holdRAF = requestAnimationFrame(tick);
+      });
+
+      card.addEventListener('touchstart', function (e) {
+        var touch = e.touches && e.touches[0];
+        if (!touch) return;
+        e.preventDefault();
+        openDex(modalId);
+        gainXp(15);
+      }, { passive: false });
+    });
+
+    document.addEventListener('mouseup', cancelHold);
+  }
+
   /* ---------- Scroll progress bar ---------- */
   function setupScrollProgress() {
     var bar = document.querySelector('.scroll-progress');
@@ -423,11 +509,13 @@
 
     function onMove(e) {
       cursor.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
-      // Hide whenever the cursor is over the battle scene (Pokedex cursor takes over there).
+      // Hide whenever the Pokedex cursor takes over (battle scene or project cards).
       var inBattle = battle && battle.contains(e.target);
-      if (inBattle !== lastInBattle) {
-        cursor.classList.toggle('hidden', inBattle);
-        lastInBattle = inBattle;
+      var inProject = !!e.target.closest && !!e.target.closest('.project-card');
+      var shouldHide = inBattle || inProject;
+      if (shouldHide !== lastInBattle) {
+        cursor.classList.toggle('hidden', shouldHide);
+        lastInBattle = shouldHide;
       }
     }
     function onLeave() {
@@ -676,6 +764,7 @@
       setupKonami();
       setupDexModals();
       setupPokedexCursor();
+      setupProjectScans();
       setupScrollProgress();
       setupReveal();
       setupNavAnchors();
